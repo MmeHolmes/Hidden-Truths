@@ -294,11 +294,13 @@ gifButton.addEventListener("click", async () => {
       <button id="send-button">Senden</button>
       <div id="emoji-picker" style="margin-top: 10px;">
       <div class="tab-content" id="story" style="display: none;">
+<section id="story" class="active">
   <h2>Story</h2>
-  <div id="story-content"></div>
-
-  <textarea id="story-input" placeholder="Schreib etwas zur Story..."></textarea>
-  <button id="story-submit">Absenden</button>
+  <textarea id="story" placeholder="Schreibe hier deine Geschichte..."></textarea>
+  <button id="submit-story">Absenden</button>
+  
+  <div id="story-display"></div>
+</section>
 </div>
 
   <span class="emoji">😊</span>
@@ -378,6 +380,80 @@ gifButton.addEventListener("click", async () => {
       storyInput.value = "";
     }
   });
+  const submitButton = document.getElementById("submit-story");
+const storyTextArea = document.getElementById("story");
+const storyDisplay = document.getElementById("story-display");
+
+submitButton.addEventListener("click", function () {
+  const storyContent = storyTextArea.value;
+  const userId = firebase.auth().currentUser.uid; // Benutzer-ID des aktuellen Nutzers
+
+  if (storyContent.trim() !== "") {
+    // Speichern in Firestore
+    db.collection("story").add({
+      text: storyContent,
+      userId: userId, // Der Ersteller des Textes
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      console.log("Text erfolgreich gespeichert!");
+      storyTextArea.value = ""; // Textfeld nach dem Absenden leeren
+    })
+    .catch((error) => {
+      console.error("Fehler beim Speichern des Textes:", error);
+    });
+  }
+});
+
+// Daten abrufen und anzeigen
+db.collection("story")
+  .orderBy("timestamp", "desc") // Nach Zeitstempel sortieren
+  .onSnapshot((snapshot) => {
+    storyDisplay.innerHTML = ""; // Vorherige Einträge löschen
+
+    snapshot.forEach((doc) => {
+      const storyData = doc.data();
+      const storyElement = document.createElement("div");
+      storyElement.classList.add("story-item");
+
+      const isUserOwner = storyData.userId === firebase.auth().currentUser.uid;
+      storyElement.innerHTML = `
+        <p>${storyData.text}</p>
+        <p class="meta">${new Date(storyData.timestamp.seconds * 1000).toLocaleString()}</p>
+        ${isUserOwner ? `
+          <button class="edit-btn" data-id="${doc.id}">Bearbeiten</button>
+          <button class="delete-btn" data-id="${doc.id}">Löschen</button>
+        ` : ""}
+      `;
+
+      storyDisplay.appendChild(storyElement);
+
+      if (isUserOwner) {
+        storyElement.querySelector(".edit-btn").addEventListener("click", () => editStory(doc.id, storyData.text));
+        storyElement.querySelector(".delete-btn").addEventListener("click", () => deleteStory(doc.id));
+      }
+    });
+  });
+    
+function editStory(docId, currentText) {
+  const newText = prompt("Bearbeite deinen Text:", currentText);
+  if (newText) {
+    db.collection("story").doc(docId).update({
+      text: newText,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => console.log("Text erfolgreich bearbeitet!"))
+    .catch((error) => console.error("Fehler beim Bearbeiten des Textes:", error));
+  }
+}
+
+function deleteStory(docId) {
+  if (confirm("Möchtest du diese Story wirklich löschen?")) {
+    db.collection("story").doc(docId).delete()
+    .then(() => console.log("Text erfolgreich gelöscht!"))
+    .catch((error) => console.error("Fehler beim Löschen des Textes:", error));
+  }
+}
 </script>
 </body>
 </html>
