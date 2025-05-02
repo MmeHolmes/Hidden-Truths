@@ -174,10 +174,10 @@
         });
       });
     });
-    const chatBox = document.getElementById("chat-box");
-const chatInput = document.getElementById("chat-input");
-const chatRef = doc(db, "content", "chat");
-
+      const chatBox = document.getElementById("chat-box");
+      const chatInput = document.getElementById("chat-input");
+      const chatRef = doc(db, "content", "chat");
+    
 onSnapshot(chatRef, (docSnap) => {
   if (docSnap.exists()) {
     const messages = docSnap.data().messages || [];
