@@ -311,5 +311,69 @@ gifButton.addEventListener("click", async () => {
 <div id="gif-results" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
     </section>
   </main>
+  <script>
+  const storyInput = document.getElementById("story-input");
+  const storySend = document.getElementById("story-send");
+  const storyBox = document.getElementById("story-box");
+
+  const db = getDatabase(); // Du hast das in deiner Firebase-Initialisierung
+
+  const storyRef = ref(db, "storyPosts");
+
+  function showStoryPost(key, content) {
+    const div = document.createElement("div");
+    div.classList.add("story-post");
+    div.dataset.key = key;
+
+    const p = document.createElement("p");
+    p.textContent = content;
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Bearbeiten";
+    editBtn.onclick = () => {
+      const newText = prompt("Neuer Text:", content);
+      if (newText !== null) {
+        update(ref(db, `storyPosts/${key}`), { content: newText });
+      }
+    };
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Löschen";
+    delBtn.onclick = () => {
+      remove(ref(db, `storyPosts/${key}`));
+    };
+
+    div.appendChild(p);
+    div.appendChild(editBtn);
+    div.appendChild(delBtn);
+    storyBox.appendChild(div);
+  }
+
+  onChildAdded(storyRef, (data) => {
+    showStoryPost(data.key, data.val().content);
+  });
+
+  onChildChanged(storyRef, (data) => {
+    const div = document.querySelector(`.story-post[data-key="${data.key}"]`);
+    if (div) {
+      div.querySelector("p").textContent = data.val().content;
+    }
+  });
+
+  onChildRemoved(storyRef, (data) => {
+    const div = document.querySelector(`.story-post[data-key="${data.key}"]`);
+    if (div) {
+      div.remove();
+    }
+  });
+
+  storySend.addEventListener("click", () => {
+    const text = storyInput.value.trim();
+    if (text !== "") {
+      push(storyRef, { content: text });
+      storyInput.value = "";
+    }
+  });
+</script>
 </body>
 </html>
