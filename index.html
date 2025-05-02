@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Login – Hidden Truths</title>
+  <style>
+    body {
+      background-color: #f7f7f7;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #login-box {
+      background: white;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input {
+      padding: 0.5rem;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="login-box">
+    <h2>Login zu Hidden Truths</h2>
+    <input type="password" id="password" placeholder="Passwort eingeben">
+    <button onclick="checkPassword()">Einloggen</button>
+    <p id="error" style="color:red;"></p>
+  </div>
+  <script>
+    function checkPassword() {
+      const pw = document.getElementById('password').value;
+      if (pw === 'versteckt2025') {
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('error').textContent = 'Falsches Passwort!';
+      }
+    }
+  </script>
+</body>
+</html>
