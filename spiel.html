@@ -254,6 +254,12 @@ gifButton.addEventListener("click", async () => {
         });
       });
     });
+    document.querySelectorAll(".emoji").forEach(emoji => {
+  emoji.addEventListener("click", () => {
+    chatInput.value += emoji.textContent;
+    chatInput.focus();
+  });
+});
   </script>
 </head>
 <body>
