@@ -182,6 +182,45 @@
               text: chatInput.value.trim(),
               time: new Date().toLocaleTimeString()
             };
+const gifSearch = document.getElementById("gif-search");
+const gifButton = document.getElementById("gif-button");
+const gifResults = document.getElementById("gif-results");
+const giphyKey = "sE1iQaH7HT73CCLd8tUuSOxjUVE1XV3r"
+
+gifButton.addEventListener("click", async () => {
+  const query = gifSearch.value.trim();
+  if (!query) return;
+
+  const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${giphyKey}&q=${encodeURIComponent(query)}&limit=10`);
+  const data = await res.json();
+
+  gifResults.innerHTML = "";
+  data.data.forEach(gif => {
+    const img = document.createElement("img");
+    img.src = gif.images.fixed_height_small.url;
+    img.alt = gif.title;
+    img.style.cursor = "pointer";
+    img.title = "GIF senden";
+    gifResults.appendChild(img);
+
+    img.addEventListener("click", async () => {
+      const msg = {
+        user: auth.currentUser.email,
+        text: `<img src="${gif.images.fixed_height.url}" alt="${gif.title}" style="max-height: 150px;" />`,
+        time: new Date().toLocaleTimeString()
+      };
+
+      const docSnap = await getDoc(chatRef);
+      let messages = [];
+      if (docSnap.exists()) {
+        messages = docSnap.data().messages || [];
+      }
+      messages.push(msg);
+      await setDoc(chatRef, { messages });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  });
+});
 
             const docSnap = await getDoc(chatRef);
             let messages = [];
