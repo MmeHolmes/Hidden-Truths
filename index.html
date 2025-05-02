@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Login – Hidden Truths</title>
+  <style>
+    body {
+      background-color: #f7f7f7;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #login-box {
+      background: white;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+    input {
+      padding: 0.5rem;
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      background-color: #2d3e4e;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .link-button {
+      background: none;
+      border: none;
+      color: #2d3e4e;
+      margin-top: 1rem;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #error, #message {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+    #error { color: red; }
+    #message { color: green; }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5MhKBHDkbtgwDY_UV1dIGnCmwh8fjRl0",
+      authDomain: "hiddentruths101.firebaseapp.com",
+      projectId: "hiddentruths101",
+      storageBucket: "hiddentruths101.firebasestorage.app",
+      messagingSenderId: "783049798112",
+      appId: "1:783049798112:web:74624ff013c9b0201c3b85"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginForm = document.getElementById("login-form");
+      const errorDisplay = document.getElementById("error");
+      const messageDisplay = document.getElementById("message");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        errorDisplay.textContent = "";
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          window.location.href = "spiel.html";
+        } catch (error) {
+          errorDisplay.textContent = "Login fehlgeschlagen. Bitte überprüfe deine Eingaben.";
+        }
+      });
+
+      document.getElementById("register-btn").addEventListener("click", async () => {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        errorDisplay.textContent = "";
+        try {
+          await createUserWithEmailAndPassword(auth, email, password);
+          window.location.href = "spiel.html";
+        } catch (error) {
+          errorDisplay.textContent = "Registrierung fehlgeschlagen: " + error.message;
+        }
+      });
+
+      document.getElementById("reset-btn").addEventListener("click", async () => {
+        const email = document.getElementById("email").value;
+        errorDisplay.textContent = "";
+        messageDisplay.textContent = "";
+        if (!email) {
+          errorDisplay.textContent = "Bitte gib deine E-Mail-Adresse ein.";
+          return;
+        }
+        try {
+          await sendPasswordResetEmail(auth, email);
+          messageDisplay.textContent = "Passwort-Reset-E-Mail wurde gesendet.";
+        } catch (error) {
+          errorDisplay.textContent = "Fehler beim Senden der E-Mail: " + error.message;
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div id="login-box">
+    <h2>Login zu Hidden Truths</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="E-Mail" required />
+      <input type="password" id="password" placeholder="Passwort" required />
+      <button type="submit">Einloggen</button>
+    </form>
+    <button class="link-button" id="register-btn">Neues Konto erstellen</button>
+    <button class="link-button" id="reset-btn">Passwort vergessen?</button>
+    <p id="error"></p>
+    <p id="message"></p>
+  </div>
+</body>
+</html>
