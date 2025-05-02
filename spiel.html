@@ -80,6 +80,30 @@
       color: #666;
       margin-top: 0.3rem;
     }
+    #chat-box {
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  background: #fff;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+
+#chat-box div {
+  margin-bottom: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: #f2f2f2;
+  border-radius: 4px;
+}
+
+#chat-input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+}
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -149,6 +173,41 @@
         });
       });
     });
+    const chatBox = document.getElementById("chat-box");
+const chatInput = document.getElementById("chat-input");
+const chatRef = doc(db, "content", "chat");
+
+onSnapshot(chatRef, (docSnap) => {
+  if (docSnap.exists()) {
+    const messages = docSnap.data().messages || [];
+    chatBox.innerHTML = "";
+    messages.forEach(msg => {
+      const div = document.createElement("div");
+      div.textContent = `[${msg.time}] ${msg.user}: ${msg.text}`;
+      chatBox.appendChild(div);
+    });
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+});
+
+chatInput.addEventListener("keydown", async (e) => {
+  if (e.key === "Enter" && chatInput.value.trim() !== "") {
+    const msg = {
+      user: auth.currentUser.email,
+      text: chatInput.value.trim(),
+      time: new Date().toLocaleTimeString()
+    };
+
+    const docSnap = await getDoc(chatRef);
+    let messages = [];
+    if (docSnap.exists()) {
+      messages = docSnap.data().messages || [];
+    }
+    messages.push(msg);
+    await setDoc(chatRef, { messages });
+    chatInput.value = "";
+  }
+});
   </script>
 </head>
 <body>
@@ -157,6 +216,7 @@
     <button id="logout-btn">Logout</button>
   </header>
   <nav>
+    <button class="tab-button" data-tab="chat">Chat</button>
     <button class="tab-button active" data-tab="story">Story</button>
     <button class="tab-button" data-tab="chars">Charaktere</button>
     <button class="tab-button" data-tab="places">Orte</button>
@@ -171,6 +231,11 @@
     <section id="notes"><h2>Notizen</h2><textarea id="notes"></textarea><div class="meta" id="notes-meta"></div></section>
     <section id="planning"><h2>Planung</h2><textarea id="planning"></textarea><div class="meta" id="planning-meta"></div></section>
     <section id="timeline"><h2>Zeitstrahl</h2><textarea id="timeline"></textarea><div class="meta" id="timeline-meta"></div></section>
+    <section id="chat">
+  <h2>Chat</h2>
+  <div id="chat-box"></div>
+  <input id="chat-input" placeholder="Schreib eine Nachricht und drücke Enter" />
+</section>
   </main>
 </body>
 </html>
