@@ -101,6 +101,16 @@
       border: 1px solid #bbb;
       font-size: 1rem;
     }
+    .emoji {
+  cursor: pointer;
+  font-size: 24px;
+  margin: 4px;
+  transition: transform 0.1s ease;
+}
+
+.emoji:hover {
+  transform: scale(1.2);
+}
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -271,6 +281,15 @@ gifButton.addEventListener("click", async () => {
       <h2>Chat</h2>
       <div id="chat-box"></div>
       <input id="chat-input" placeholder="Schreib eine Nachricht und drücke Enter" />
+      <button id="send-button">Senden</button>
+      <div id="emoji-picker" style="margin-top: 10px;">
+  <span class="emoji">😊</span>
+  <span class="emoji">😂</span>
+  <span class="emoji">🔥</span>
+  <span class="emoji">❤️</span>
+  <span class="emoji">😎</span>
+  <span class="emoji">🎉</span>
+</div>
       <div style="margin-top: 1rem;">
   <input id="gif-search" placeholder="GIF suchen..." />
   <button id="gif-button">Suchen</button>
