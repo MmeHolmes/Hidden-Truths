@@ -400,10 +400,14 @@ function initializeChat(db, auth) {
     if (messageText && auth.currentUser) {
       try {
         await addDoc(messagesRef, {
-          text: messageText,
-          user: auth.currentUser.email,
-          timestamp: new Date().getTime()
-        });
+        text: messageText,
+        user: {
+        uid: auth.currentUser.uid,
+        email: auth.currentUser.email
+  },
+  timestamp: new Date().getTime()
+});
+
         chatInput.value = "";
       } catch (error) {
         console.error("Error sending message:", error);
@@ -457,9 +461,14 @@ function initializeGifSearch(messagesRef, auth) {
         img.addEventListener("click", async () => {
           try {
             await addDoc(messagesRef, {
-              text: `<img src="${gif.images.fixed_height.url}" alt="${gif.title}" style="max-height: 150px;" />`,
-              user: auth.currentUser.email,
-              timestamp: new Date().getTime()
+            text: `<img src="${gif.images.fixed_height.url}" alt="${gif.title}" style="max-height: 150px;" />`,
+            user: {
+            uid: auth.currentUser.uid,
+            email: auth.currentUser.email
+  },
+  timestamp: new Date().getTime()
+});
+
             });
             gifSearch.value = "";
             gifResults.innerHTML = "";
