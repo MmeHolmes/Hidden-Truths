@@ -8,14 +8,16 @@
   <link rel="manifest" href="manifest.json">
   <style>
     body {
-      *, *::before, *::after {
-        font-family: 'Lora', serif !important;
-      }
       margin: 0;
       font-family: 'Lora', serif;
       background-color: #e8eceb;
       color: #222;
     }
+
+    *, *::before, *::after {
+      font-family: 'Lora', serif !important;
+    }
+
     header {
       background-color: #e8eceb;
       color: #2d3e4e;
@@ -25,6 +27,7 @@
       text-transform: uppercase;
       position: relative;
     }
+
     #logout-btn {
       position: absolute;
       right: 1rem;
@@ -36,10 +39,12 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
     nav {
       display: flex;
       background: #8cbdb9;
     }
+
     nav button {
       flex: 1;
       padding: 1rem;
@@ -49,20 +54,25 @@
       cursor: pointer;
       font-size: 1.1rem;
     }
+
     nav button.active {
       background: #2d3e4e;
     }
+
     section {
       display: none;
       padding: 1rem;
     }
+
     section.active {
       display: block;
     }
+
     h2 {
       text-transform: uppercase;
       border-bottom: 2px solid #8cbdb9;
     }
+
     textarea {
       width: 100%;
       height: 200px;
@@ -74,231 +84,243 @@
       background: #fff;
       color: #222;
     }
+
     .meta {
       font-size: 0.9rem;
       color: #666;
       margin-top: 0.3rem;
     }
+
+    /* Chat Styles */
     #chat-box {
-  height: 400px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background: white;
-}
-
-#chat-box div {
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 4px;
-  background: #f5f5f5;
-}
-
-.chat-input-container {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-#chat-input {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#send-button {
-  padding: 0.5rem 1rem;
-  background: #2d3e4e;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#send-button:hover {
-  background: #374b5f;
-}
-
-.time {
-  color: #666;
-  font-size: 0.9em;
-}
-
-.message {
-  margin-left: 0.5rem;
-}
-
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: white;
     }
+
+    #chat-box div {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      background: #f5f5f5;
+    }
+
+    .chat-input-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    #chat-input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #send-button {
+      padding: 0.5rem 1rem;
+      background: #2d3e4e;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #send-button:hover {
+      background: #374b5f;
+    }
+
+    .time {
+      color: #666;
+      font-size: 0.9em;
+    }
+
+    .message {
+      margin-left: 0.5rem;
+    }
+
     .emoji {
-  cursor: pointer;
-  font-size: 24px;
-  margin: 4px;
-  transition: transform 0.1s ease;
-}
+      cursor: pointer;
+      font-size: 24px;
+      margin: 4px;
+      transition: transform 0.1s ease;
+    }
 
-.emoji:hover {
-  transform: scale(1.2);
-}
+    .emoji:hover {
+      transform: scale(1.2);
+    }
+
+    /* Story Styles */
+    .story-item {
+      background: #fff;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .story-item button {
+      margin-right: 0.5rem;
+      padding: 0.3rem 0.6rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .edit-btn {
+      background: #2d3e4e;
+      color: white;
+    }
+
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+    }
+
+    #gif-results {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    #gif-results img {
+      max-width: 150px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
+
+  <!-- Firebase Scripts -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection, addDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    // Firebase configuration will go here
+  </script>
+</head>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB5MhKBHDkbtgwDY_UV1dIGnCmwh8fjRl0",
-      authDomain: "hiddentruths101.firebaseapp.com",
-      projectId: "hiddentruths101",
-      storageBucket: "hiddentruths101.firebasestorage.app",
-      messagingSenderId: "783049798112",
-      appId: "1:783049798112:web:74624ff013c9b0201c3b85"
-    };
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /messages/{messageId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
-    }
-  }
-}
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const fields = ["story", "chars", "places", "notes", "planning", "timeline"];
+ <!-- Continue from previous part, inside the <head> tag -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    onSnapshot, 
+    getDoc, 
+    collection, 
+    addDoc, 
+    query, 
+    orderBy, 
+    updateDoc,
+    deleteDoc 
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    document.addEventListener("DOMContentLoaded", () => {
-      onAuthStateChanged(auth, user => {
-        if (!user) {
-          window.location.href = "index.html";
-          return;
-        }
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyB5MhKBHDkbtgwDY_UV1dIGnCmwh8fjRl0",
+    authDomain: "hiddentruths101.firebaseapp.com",
+    projectId: "hiddentruths101",
+    storageBucket: "hiddentruths101.firebasestorage.app",
+    messagingSenderId: "783049798112",
+    appId: "1:783049798112:web:74624ff013c9b0201c3b85"
+  };
 
-        document.getElementById("logout-btn").addEventListener("click", () => {
-          signOut(auth).then(() => {
-            window.location.href = "index.html";
-          });
-        });
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-        fields.forEach(field => {
-          const textarea = document.getElementById(field);
-          const meta = document.getElementById(field + "-meta");
-          const docRef = doc(db, "content", field);
-
-          onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-              const data = docSnap.data();
-              textarea.value = data.text || "";
-              meta.textContent = `Zuletzt geändert von ${data.user || "?"} um ${data.timestamp || "?"}`;
-            }
-          });
-
-          textarea.addEventListener("input", async () => {
-            const now = new Date().toLocaleTimeString();
-            await setDoc(docRef, {
-              text: textarea.value,
-              user: user.email,
-              timestamp: now
-            });
-          });
-        });
-// Inside your DOMContentLoaded event listener, replace the existing chat code with:
-const chatBox = document.getElementById("chat-box");
-const chatInput = document.getElementById("chat-input");
-const sendButton = document.getElementById("send-button");
-const messagesRef = collection(db, "messages");
-const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
-
-// Listen for new messages
-onSnapshot(messagesQuery, (snapshot) => {
-  chatBox.innerHTML = "";
-  snapshot.forEach((doc) => {
-    const message = doc.data();
-    const messageDiv = document.createElement("div");
-    messageDiv.innerHTML = `
-      <strong>${message.user}</strong> 
-      <span class="time">[${new Date(message.timestamp).toLocaleTimeString()}]:</span> 
-      <span class="message">${message.text}</span>
-    `;
-    chatBox.appendChild(messageDiv);
-  });
-  chatBox.scrollTop = chatBox.scrollHeight;
-});
-
-// Send message function
-const sendMessage = async () => {
-  const messageText = chatInput.value.trim();
-  if (messageText && auth.currentUser) {
-    try {
-      await addDoc(messagesRef, {
-        text: messageText,
-        user: auth.currentUser.email,
-        timestamp: new Date().getTime()
-      });
-      chatInput.value = "";
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
-  }
-};
-
-// Event listeners for sending messages
-sendButton.addEventListener("click", sendMessage);
-chatInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    sendMessage();
-  }
-});
-
-// GIF handling
-const gifSearch = document.getElementById("gif-search");
-const gifButton = document.getElementById("gif-button");
-const gifResults = document.getElementById("gif-results");
-const giphyKey = "sE1iQaH7HT73CCLd8tUuSOxjUVE1XV3r";
-
-gifButton.addEventListener("click", async () => {
-  const query = gifSearch.value.trim();
-  if (!query) return;
-
-  const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${giphyKey}&q=${encodeURIComponent(query)}&limit=10`);
-  const data = await res.json();
-
-  gifResults.innerHTML = "";
-  data.data.forEach(gif => {
-    const img = document.createElement("img");
-    img.src = gif.images.fixed_height_small.url;
-    img.alt = gif.title;
-    img.style.cursor = "pointer";
-    img.title = "GIF senden";
-    gifResults.appendChild(img);
-
-    img.addEventListener("click", async () => {
-      try {
-        await addDoc(messagesRef, {
-          text: `<img src="${gif.images.fixed_height.url}" alt="${gif.title}" style="max-height: 150px;" />`,
-          user: auth.currentUser.email,
-          timestamp: new Date().getTime()
-        });
-      } catch (error) {
-        console.error("Error sending GIF:", error);
+  // Main application logic
+  document.addEventListener("DOMContentLoaded", () => {
+    // Authentication check
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
       }
+
+      // Initialize all features
+      initializeChat(db, auth);
+      initializeStory(db, auth);
+      initializeTabs();
+      initializeLogout(auth);
+      initializeContentFields(db, auth);
     });
   });
-});
 
-  </script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  // Initialize tabs
+  function initializeTabs() {
+    const tabs = document.querySelectorAll('.tab-button');
+    const sections = document.querySelectorAll('main > section');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+  }
 
+  // Initialize logout
+  function initializeLogout(auth) {
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    });
+  }
+
+  // Initialize content fields
+  function initializeContentFields(db, auth) {
+    const fields = ["story", "chars", "places", "notes", "planning", "timeline"];
+
+    fields.forEach(field => {
+      const textarea = document.getElementById(field);
+      const meta = document.getElementById(field + "-meta");
+      const docRef = doc(db, "content", field);
+
+      onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          textarea.value = data.text || "";
+          meta.textContent = `Zuletzt geändert von ${data.user || "?"} um ${data.timestamp || "?"}`;
+        }
+      });
+
+      textarea.addEventListener("input", async () => {
+        const now = new Date().toLocaleTimeString();
+        await setDoc(docRef, {
+          text: textarea.value,
+          user: auth.currentUser.email,
+          timestamp: now
+        });
+      });
+    });
+  }
+
+  // Chat initialization function (will be defined in Part 3)
+  function initializeChat(db, auth) {
+    // Chat functionality will go here
+  }
+
+  // Story initialization function (will be defined in Part 4)
+  function initializeStory(db, auth) {
+    // Story functionality will go here
+  }
+</script>
 </head>
 <body>
   <header>
     Hidden Truths
     <button id="logout-btn">Logout</button>
   </header>
+
   <nav>
     <button class="tab-button" data-tab="chat">Chat</button>
     <button class="tab-button active" data-tab="story">Story</button>
@@ -308,194 +330,265 @@ gifButton.addEventListener("click", async () => {
     <button class="tab-button" data-tab="planning">Planung</button>
     <button class="tab-button" data-tab="timeline">Zeitstrahl</button>
   </nav>
-  <main>
-    <section id="story" class="active"><h2>Story</h2><textarea id="story"></textarea><div class="meta" id="story-meta"></div></section>
-    <section id="chars"><h2>Charaktere</h2><textarea id="chars"></textarea><div class="meta" id="chars-meta"></div></section>
-    <section id="places"><h2>Orte</h2><textarea id="places"></textarea><div class="meta" id="places-meta"></div></section>
-    <section id="notes"><h2>Notizen</h2><textarea id="notes"></textarea><div class="meta" id="notes-meta"></div></section>
-    <section id="planning"><h2>Planung</h2><textarea id="planning"></textarea><div class="meta" id="planning-meta"></div></section>
-    <section id="timeline"><h2>Zeitstrahl</h2><textarea id="timeline"></textarea><div class="meta" id="timeline-meta"></div></section>
-   <section id="chat">
-  <h2>Chat</h2>
-  <div id="chat-box"></div>
-  <div class="chat-input-container">
-    <input id="chat-input" type="text" placeholder="Schreib eine Nachricht..." />
-    <button id="send-button">Senden</button>
-  </div>
-  <div id="emoji-picker">
-    <span class="emoji">😊</span>
-    <span class="emoji">😂</span>
-    <span class="emoji">🔥</span>
-    <span class="emoji">❤️</span>
-    <span class="emoji">😎</span>
-    <span class="emoji">🎉</span>
-  </div>
-  <div style="margin-top: 1rem;">
-    <input id="gif-search" placeholder="GIF suchen..." />
-    <button id="gif-button">Suchen</button>
-  </div>
-  <div id="gif-results" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
-</section>
-<section id="story" class="active">
-  <h2>Story</h2>
-  <textarea id="story" placeholder="Schreibe hier deine Geschichte..."></textarea>
-  <button id="submit-story">Absenden</button>
-  
-  <div id="story-display"></div>
-</section>
-</div>
 
-  <span class="emoji">😊</span>
-  <span class="emoji">😂</span>
-  <span class="emoji">🔥</span>
-  <span class="emoji">❤️</span>
-  <span class="emoji">😎</span>
-  <span class="emoji">🎉</span>
-</div>
+  <main>
+    <section id="story" class="active">
+      <h2>Story</h2>
+      <textarea id="story" placeholder="Schreibe hier deine Geschichte..."></textarea>
+      <button id="submit-story">Absenden</button>
+      <div id="story-display"></div>
+      <div class="meta" id="story-meta"></div>
+    </section>
+
+    <section id="chars">
+      <h2>Charaktere</h2>
+      <textarea id="chars"></textarea>
+      <div class="meta" id="chars-meta"></div>
+    </section>
+
+    <section id="places">
+      <h2>Orte</h2>
+      <textarea id="places"></textarea>
+      <div class="meta" id="places-meta"></div>
+    </section>
+
+    <section id="notes">
+      <h2>Notizen</h2>
+      <textarea id="notes"></textarea>
+      <div class="meta" id="notes-meta"></div>
+    </section>
+
+    <section id="planning">
+      <h2>Planung</h2>
+      <textarea id="planning"></textarea>
+      <div class="meta" id="planning-meta"></div>
+    </section>
+
+    <section id="timeline">
+      <h2>Zeitstrahl</h2>
+      <textarea id="timeline"></textarea>
+      <div class="meta" id="timeline-meta"></div>
+    </section>
+
+    <section id="chat">
+      <h2>Chat</h2>
+      <div id="chat-box"></div>
+      <div class="chat-input-container">
+        <input id="chat-input" type="text" placeholder="Schreib eine Nachricht..." />
+        <button id="send-button">Senden</button>
+      </div>
+      <div id="emoji-picker">
+        <span class="emoji">😊</span>
+        <span class="emoji">😂</span>
+        <span class="emoji">🔥</span>
+        <span class="emoji">❤️</span>
+        <span class="emoji">😎</span>
+        <span class="emoji">🎉</span>
+      </div>
       <div style="margin-top: 1rem;">
-  <input id="gif-search" placeholder="GIF suchen..." />
-  <button id="gif-button">Suchen</button>
-</div>
-<div id="gif-results" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
+        <input id="gif-search" placeholder="GIF suchen..." />
+        <button id="gif-button">Suchen</button>
+      </div>
+      <div id="gif-results"></div>
     </section>
   </main>
-  <script>
-  const storyInput = document.getElementById("story-input");
-  const storySend = document.getElementById("story-send");
-  const storyBox = document.getElementById("story-box");
+</body>
+</html>
+// Add this inside your main script tag, after the initialization functions
 
-  const db = getDatabase(); // Du hast das in deiner Firebase-Initialisierung
+function initializeChat(db, auth) {
+  const chatBox = document.getElementById("chat-box");
+  const chatInput = document.getElementById("chat-input");
+  const sendButton = document.getElementById("send-button");
+  const messagesRef = collection(db, "messages");
+  const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
 
-  const storyRef = ref(db, "storyPosts");
+  // Initialize emoji picker
+  initializeEmojiPicker(chatInput);
+  
+  // Initialize GIF functionality
+  initializeGifSearch(messagesRef, auth);
 
-  function showStoryPost(key, content) {
-    const div = document.createElement("div");
-    div.classList.add("story-post");
-    div.dataset.key = key;
-
-    const p = document.createElement("p");
-    p.textContent = content;
-
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "Bearbeiten";
-    editBtn.onclick = () => {
-      const newText = prompt("Neuer Text:", content);
-      if (newText !== null) {
-        update(ref(db, `storyPosts/${key}`), { content: newText });
-      }
-    };
-
-    const delBtn = document.createElement("button");
-    delBtn.textContent = "Löschen";
-    delBtn.onclick = () => {
-      remove(ref(db, `storyPosts/${key}`));
-    };
-
-    div.appendChild(p);
-    div.appendChild(editBtn);
-    div.appendChild(delBtn);
-    storyBox.appendChild(div);
-  }
-
-  onChildAdded(storyRef, (data) => {
-    showStoryPost(data.key, data.val().content);
-  });
-
-  onChildChanged(storyRef, (data) => {
-    const div = document.querySelector(`.story-post[data-key="${data.key}"]`);
-    if (div) {
-      div.querySelector("p").textContent = data.val().content;
-    }
-  });
-
-  onChildRemoved(storyRef, (data) => {
-    const div = document.querySelector(`.story-post[data-key="${data.key}"]`);
-    if (div) {
-      div.remove();
-    }
-  });
-
-  storySend.addEventListener("click", () => {
-    const text = storyInput.value.trim();
-    if (text !== "") {
-      push(storyRef, { content: text });
-      storyInput.value = "";
-    }
-  });
-  const submitButton = document.getElementById("submit-story");
-const storyTextArea = document.getElementById("story");
-const storyDisplay = document.getElementById("story-display");
-
-submitButton.addEventListener("click", function () {
-  const storyContent = storyTextArea.value;
-  const userId = firebase.auth().currentUser.uid; // Benutzer-ID des aktuellen Nutzers
-
-  if (storyContent.trim() !== "") {
-    // Speichern in Firestore
-    db.collection("story").add({
-      text: storyContent,
-      userId: userId, // Der Ersteller des Textes
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-      console.log("Text erfolgreich gespeichert!");
-      storyTextArea.value = ""; // Textfeld nach dem Absenden leeren
-    })
-    .catch((error) => {
-      console.error("Fehler beim Speichern des Textes:", error);
+  // Listen for new messages
+  onSnapshot(messagesQuery, (snapshot) => {
+    chatBox.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const message = doc.data();
+      const messageDiv = document.createElement("div");
+      messageDiv.innerHTML = `
+        <strong>${message.user}</strong> 
+        <span class="time">[${new Date(message.timestamp).toLocaleTimeString()}]:</span> 
+        <span class="message">${message.text}</span>
+      `;
+      chatBox.appendChild(messageDiv);
     });
-  }
-});
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
 
-// Daten abrufen und anzeigen
-db.collection("story")
-  .orderBy("timestamp", "desc") // Nach Zeitstempel sortieren
-  .onSnapshot((snapshot) => {
-    storyDisplay.innerHTML = ""; // Vorherige Einträge löschen
+  // Send message function
+  const sendMessage = async () => {
+    const messageText = chatInput.value.trim();
+    if (messageText && auth.currentUser) {
+      try {
+        await addDoc(messagesRef, {
+          text: messageText,
+          user: auth.currentUser.email,
+          timestamp: new Date().getTime()
+        });
+        chatInput.value = "";
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
+    }
+  };
 
+  // Event listeners for sending messages
+  sendButton.addEventListener("click", sendMessage);
+  chatInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  });
+}
+
+function initializeEmojiPicker(chatInput) {
+  document.querySelectorAll(".emoji").forEach(emoji => {
+    emoji.addEventListener("click", () => {
+      chatInput.value += emoji.textContent;
+      chatInput.focus();
+    });
+  });
+}
+
+function initializeGifSearch(messagesRef, auth) {
+  const gifSearch = document.getElementById("gif-search");
+  const gifButton = document.getElementById("gif-button");
+  const gifResults = document.getElementById("gif-results");
+  const giphyKey = "sE1iQaH7HT73CCLd8tUuSOxjUVE1XV3r";
+
+  gifButton.addEventListener("click", async () => {
+    const query = gifSearch.value.trim();
+    if (!query) return;
+
+    try {
+      const res = await fetch(
+        `https://api.giphy.com/v1/gifs/search?api_key=${giphyKey}&q=${encodeURIComponent(query)}&limit=10`
+      );
+      const data = await res.json();
+
+      gifResults.innerHTML = "";
+      data.data.forEach(gif => {
+        const img = document.createElement("img");
+        img.src = gif.images.fixed_height_small.url;
+        img.alt = gif.title;
+        img.style.cursor = "pointer";
+        img.title = "GIF senden";
+        gifResults.appendChild(img);
+
+        img.addEventListener("click", async () => {
+          try {
+            await addDoc(messagesRef, {
+              text: `<img src="${gif.images.fixed_height.url}" alt="${gif.title}" style="max-height: 150px;" />`,
+              user: auth.currentUser.email,
+              timestamp: new Date().getTime()
+            });
+            gifSearch.value = "";
+            gifResults.innerHTML = "";
+          } catch (error) {
+            console.error("Error sending GIF:", error);
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Error searching GIFs:", error);
+    }
+  });
+}
+// Add this after the chat functionality
+
+function initializeStory(db, auth) {
+  const storyCollection = collection(db, "story");
+  const storyTextArea = document.getElementById("story");
+  const submitButton = document.getElementById("submit-story");
+  const storyDisplay = document.getElementById("story-display");
+
+  // Submit new story
+  submitButton.addEventListener("click", async function() {
+    const storyContent = storyTextArea.value;
+    
+    if (storyContent.trim() !== "") {
+      try {
+        await addDoc(storyCollection, {
+          text: storyContent,
+          userId: auth.currentUser.uid,
+          userEmail: auth.currentUser.email,
+          timestamp: new Date().getTime()
+        });
+        storyTextArea.value = "";
+        console.log("Story successfully saved!");
+      } catch (error) {
+        console.error("Error saving story:", error);
+      }
+    }
+  });
+
+  // Listen for story updates
+  const storyQuery = query(storyCollection, orderBy("timestamp", "desc"));
+  
+  onSnapshot(storyQuery, (snapshot) => {
+    storyDisplay.innerHTML = "";
+    
     snapshot.forEach((doc) => {
       const storyData = doc.data();
       const storyElement = document.createElement("div");
       storyElement.classList.add("story-item");
-
-      const isUserOwner = storyData.userId === firebase.auth().currentUser.uid;
+      
+      const isUserOwner = storyData.userId === auth.currentUser.uid;
       storyElement.innerHTML = `
         <p>${storyData.text}</p>
-        <p class="meta">${new Date(storyData.timestamp.seconds * 1000).toLocaleString()}</p>
+        <p class="meta">Posted by ${storyData.userEmail} on ${new Date(storyData.timestamp).toLocaleString()}</p>
         ${isUserOwner ? `
           <button class="edit-btn" data-id="${doc.id}">Bearbeiten</button>
           <button class="delete-btn" data-id="${doc.id}">Löschen</button>
         ` : ""}
       `;
-
+      
       storyDisplay.appendChild(storyElement);
-
+      
       if (isUserOwner) {
-        storyElement.querySelector(".edit-btn").addEventListener("click", () => editStory(doc.id, storyData.text));
-        storyElement.querySelector(".delete-btn").addEventListener("click", () => deleteStory(doc.id));
+        storyElement.querySelector(".edit-btn").addEventListener("click", () => 
+          editStory(doc.id, storyData.text, storyCollection));
+        storyElement.querySelector(".delete-btn").addEventListener("click", () => 
+          deleteStory(doc.id, storyCollection));
       }
     });
   });
-    
-function editStory(docId, currentText) {
+}
+
+async function editStory(docId, currentText, storyCollection) {
   const newText = prompt("Bearbeite deinen Text:", currentText);
   if (newText) {
-    db.collection("story").doc(docId).update({
-      text: newText,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => console.log("Text erfolgreich bearbeitet!"))
-    .catch((error) => console.error("Fehler beim Bearbeiten des Textes:", error));
+    try {
+      await updateDoc(doc(storyCollection.firestore, storyCollection.path, docId), {
+        text: newText,
+        timestamp: new Date().getTime()
+      });
+      console.log("Story successfully edited!");
+    } catch (error) {
+      console.error("Error editing story:", error);
+    }
   }
 }
 
-function deleteStory(docId) {
+async function deleteStory(docId, storyCollection) {
   if (confirm("Möchtest du diese Story wirklich löschen?")) {
-    db.collection("story").doc(docId).delete()
-    .then(() => console.log("Text erfolgreich gelöscht!"))
-    .catch((error) => console.error("Fehler beim Löschen des Textes:", error));
+    try {
+      await deleteDoc(doc(storyCollection.firestore, storyCollection.path, docId));
+      console.log("Story successfully deleted!");
+    } catch (error) {
+      console.error("Error deleting story:", error);
+    }
   }
 }
-</script>
-</body>
+
 </html>
