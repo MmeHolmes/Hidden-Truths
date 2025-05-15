@@ -80,26 +80,56 @@
       margin-top: 0.3rem;
     }
     #chat-box {
-      height: 300px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      background: #fff;
-      margin-bottom: 0.5rem;
-      border-radius: 6px;
-    }
-    #chat-box div {
-      margin-bottom: 0.5rem;
-      padding: 0.4rem 0.6rem;
-      background: #f2f2f2;
-      border-radius: 4px;
-    }
-    #chat-input {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid #bbb;
-      font-size: 1rem;
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: white;
+}
+
+#chat-box div {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background: #f5f5f5;
+}
+
+.chat-input-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#chat-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#send-button {
+  padding: 0.5rem 1rem;
+  background: #2d3e4e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#send-button:hover {
+  background: #374b5f;
+}
+
+.time {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.message {
+  margin-left: 0.5rem;
+}
+
     }
     .emoji {
   cursor: pointer;
@@ -114,7 +144,7 @@
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection, addDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -125,7 +155,15 @@
       messagingSenderId: "783049798112",
       appId: "1:783049798112:web:74624ff013c9b0201c3b85"
     };
-
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /messages/{messageId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+    }
+  }
+}
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
@@ -166,35 +204,59 @@
             });
           });
         });
+// Inside your DOMContentLoaded event listener, replace the existing chat code with:
+const chatBox = document.getElementById("chat-box");
+const chatInput = document.getElementById("chat-input");
+const sendButton = document.getElementById("send-button");
+const messagesRef = collection(db, "messages");
+const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
 
-        const chatBox = document.getElementById("chat-box");
-        const chatInput = document.getElementById("chat-input");
-        const chatRef = doc(db, "content", "chat");
+// Listen for new messages
+onSnapshot(messagesQuery, (snapshot) => {
+  chatBox.innerHTML = "";
+  snapshot.forEach((doc) => {
+    const message = doc.data();
+    const messageDiv = document.createElement("div");
+    messageDiv.innerHTML = `
+      <strong>${message.user}</strong> 
+      <span class="time">[${new Date(message.timestamp).toLocaleTimeString()}]:</span> 
+      <span class="message">${message.text}</span>
+    `;
+    chatBox.appendChild(messageDiv);
+  });
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
 
-        onSnapshot(chatRef, (docSnap) => {
-          if (docSnap.exists()) {
-            const messages = docSnap.data().messages || [];
-            chatBox.innerHTML = "";
-            messages.forEach(msg => {
-              const div = document.createElement("div");
-             div.innerHTML = `[${msg.time}] <strong>${msg.user}</strong>: ${msg.text}`;
-              chatBox.appendChild(div);
-            });
-            chatBox.scrollTop = chatBox.scrollHeight;
-          }
-        });
+// Send message function
+const sendMessage = async () => {
+  const messageText = chatInput.value.trim();
+  if (messageText && auth.currentUser) {
+    try {
+      await addDoc(messagesRef, {
+        text: messageText,
+        user: auth.currentUser.email,
+        timestamp: new Date().getTime()
+      });
+      chatInput.value = "";
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  }
+};
 
-        chatInput.addEventListener("keydown", async (e) => {
-          if (e.key === "Enter" && chatInput.value.trim() !== "") {
-            const msg = {
-              user: user.email,
-              text: chatInput.value.trim(),
-              time: new Date().toLocaleTimeString()
-            };
+// Event listeners for sending messages
+sendButton.addEventListener("click", sendMessage);
+chatInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    sendMessage();
+  }
+});
+
+// GIF handling
 const gifSearch = document.getElementById("gif-search");
 const gifButton = document.getElementById("gif-button");
 const gifResults = document.getElementById("gif-results");
-const giphyKey = "sE1iQaH7HT73CCLd8tUuSOxjUVE1XV3r"
+const giphyKey = "sE1iQaH7HT73CCLd8tUuSOxjUVE1XV3r";
 
 gifButton.addEventListener("click", async () => {
   const query = gifSearch.value.trim();
@@ -213,53 +275,19 @@ gifButton.addEventListener("click", async () => {
     gifResults.appendChild(img);
 
     img.addEventListener("click", async () => {
-      const msg = {
-        user: auth.currentUser.email,
-        text: `<img src="${gif.images.fixed_height.url}" alt="${gif.title}" style="max-height: 150px;" />`,
-        time: new Date().toLocaleTimeString()
-      };
-
-      const docSnap = await getDoc(chatRef);
-      let messages = [];
-      if (docSnap.exists()) {
-        messages = docSnap.data().messages || [];
+      try {
+        await addDoc(messagesRef, {
+          text: `<img src="${gif.images.fixed_height.url}" alt="${gif.title}" style="max-height: 150px;" />`,
+          user: auth.currentUser.email,
+          timestamp: new Date().getTime()
+        });
+      } catch (error) {
+        console.error("Error sending GIF:", error);
       }
-      messages.push(msg);
-      await setDoc(chatRef, { messages });
-      chatBox.scrollTop = chatBox.scrollHeight;
     });
   });
 });
 
-            const docSnap = await getDoc(chatRef);
-            let messages = [];
-            if (docSnap.exists()) {
-              messages = docSnap.data().messages || [];
-            }
-            messages.push(msg);
-            await setDoc(chatRef, { messages });
-            chatInput.value = "";
-          }
-        });
-      });
-
-      const tabs = document.querySelectorAll('.tab-button');
-      const sections = document.querySelectorAll('main > section');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          sections.forEach(s => s.classList.remove('active'));
-          tab.classList.add('active');
-          document.getElementById(tab.dataset.tab).classList.add('active');
-        });
-      });
-    });
-    document.querySelectorAll(".emoji").forEach(emoji => {
-  emoji.addEventListener("click", () => {
-    chatInput.value += emoji.textContent;
-    chatInput.focus();
-  });
-});
   </script>
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
@@ -287,13 +315,27 @@ gifButton.addEventListener("click", async () => {
     <section id="notes"><h2>Notizen</h2><textarea id="notes"></textarea><div class="meta" id="notes-meta"></div></section>
     <section id="planning"><h2>Planung</h2><textarea id="planning"></textarea><div class="meta" id="planning-meta"></div></section>
     <section id="timeline"><h2>Zeitstrahl</h2><textarea id="timeline"></textarea><div class="meta" id="timeline-meta"></div></section>
-    <section id="chat">
-      <h2>Chat</h2>
-      <div id="chat-box"></div>
-      <input id="chat-input" placeholder="Schreib eine Nachricht und drücke Enter" />
-      <button id="send-button">Senden</button>
-      <div id="emoji-picker" style="margin-top: 10px;">
-      <div class="tab-content" id="story" style="display: none;">
+   <section id="chat">
+  <h2>Chat</h2>
+  <div id="chat-box"></div>
+  <div class="chat-input-container">
+    <input id="chat-input" type="text" placeholder="Schreib eine Nachricht..." />
+    <button id="send-button">Senden</button>
+  </div>
+  <div id="emoji-picker">
+    <span class="emoji">😊</span>
+    <span class="emoji">😂</span>
+    <span class="emoji">🔥</span>
+    <span class="emoji">❤️</span>
+    <span class="emoji">😎</span>
+    <span class="emoji">🎉</span>
+  </div>
+  <div style="margin-top: 1rem;">
+    <input id="gif-search" placeholder="GIF suchen..." />
+    <button id="gif-button">Suchen</button>
+  </div>
+  <div id="gif-results" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;"></div>
+</section>
 <section id="story" class="active">
   <h2>Story</h2>
   <textarea id="story" placeholder="Schreibe hier deine Geschichte..."></textarea>
